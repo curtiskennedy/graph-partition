@@ -112,11 +112,11 @@ def guided():
             # Go back to file explorer
             done = False
 
-    if answers['algo'] == "Approx-1 for MIN-MAX k=2 (recommended)":
+    if answers['algo'] == "Approx-1 for MAX-MIN k=2 (recommended)":
         print("Running Approx-1 ...")
         algo = approx1
         k=2
-    elif answers['algo'] == "Approx-2 for MIN-MAX k=2":
+    elif answers['algo'] == "Approx-2 for MAX-MIN k=2":
         print("Running Approx-2 ...")
         algo = approx2
         k=2
