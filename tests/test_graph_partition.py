@@ -2,7 +2,7 @@ from graph_partition import __version__, Graph
 
 
 def test_version():
-    assert __version__ == '2021.7.19'
+    assert __version__ == '2021.7.29'
 
 def test_graph_weight():
     mockGraph = Graph()
