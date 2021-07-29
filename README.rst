@@ -12,7 +12,7 @@ Installation (linux commands shown)
 ############
 Create a Python3.8 virtual environment (confirm version with 'python --version')::
     
-    python -m venv env
+    python3.8 -m venv env
 
 Activate the created environment::
     
