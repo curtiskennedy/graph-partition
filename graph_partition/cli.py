@@ -1,12 +1,19 @@
 from __future__ import print_function, unicode_literals
+
 import os
 import time
+import csv
+
 from collections import defaultdict
-
 from PyInquirer import style_from_dict, Token, prompt
-
 from pyfiglet import Figlet
-from graph_partition import readInstance, checkAll, approx1, approx2, approx3, approx4, approx5
+from graph_partition import readInstance, checkAll, approx1, approx2, approx3, approx4, approx5, approx6
+
+
+def experiment():
+    print("Loading CLI...")
+    f = Figlet(font='slant')
+    print(f.renderText("graph-partition"))
 
 
 def guided():
@@ -85,11 +92,11 @@ def guided():
         graph = readInstance(name)
         print("="*len("Graph statistics for {}:".format(result)))
         print("Graph statistics for {}:".format(result))
-        print("       # of nodes = {}".format(len(graph.nodes)))
-        print("     Total weight = {}".format(graph.weight()))
-        print("     Is connected = {}".format(graph.isConnected()))
-        print("   Is 2-conencted = {}".format(graph.is2Connected()))
-        print("# of bicomponents = {}".format(len(graph.getBicomponents())))
+        print("        # of nodes = {}".format(len(graph.nodes)))
+        print("      Total weight = {}".format(graph.weight()))
+        print("      Is connected = {}".format(graph.isConnected()))
+        print("    Is 2-conencted = {}".format(graph.is2Connected()))
+        print(" # of bicomponents = {}".format(len(graph.getBicomponents())))
         print("="*len("Graph statistics for {}:".format(result)))
         
 
@@ -132,6 +139,10 @@ def guided():
         print("Running Approx-5 ...")
         algo = approx5
         k=3
+    elif answers['algo'] == "Approx-6 for MAX-MIN k=3 (recommended)":
+        print("Running Approx-6 ...")
+        algo = approx6
+        k=3
 
     if k==2:
         start = time.time()
@@ -146,11 +157,10 @@ def guided():
     string = "Instance name = {}".format(result)
     print("\n"+ "="*len(string))
     print(string)
-    print("  Time taken =", end-start, "seconds")
-    print("   V1 weight =", V1.weight())
-    print("   V2 weight =", V2.weight())
+    print("   Time taken =", end-start, "seconds")
+    print("    V1 weight =", V1.weight())
+    print("    V2 weight =", V2.weight())
     if k == 3:
-        print("   V3 weight =", V3.weight())
+        print("    V3 weight =", V3.weight())
     print("="*len(string))
-
 

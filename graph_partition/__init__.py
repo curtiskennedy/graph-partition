@@ -8,3 +8,4 @@ from graph_partition.algorithms.approx2 import approx2
 from graph_partition.algorithms.approx3 import approx3
 from graph_partition.algorithms.approx4 import approx4
 from graph_partition.algorithms.approx5 import approx5
+from graph_partition.algorithms.approx6 import approx6

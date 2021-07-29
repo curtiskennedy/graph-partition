@@ -2,38 +2,34 @@
 # ckennedy@ualberta.ca
 
 import sys
-from graph_partition.cli import guided
+from graph_partition.cli import guided, experiment
 
 def cli(args=None):
     """
-    OPTIONS
-
-    When the program is run from the command line, you can pass different arguments to affect the output
-
-    passing the -guided command line argument will run a command line menu
-
-    passing the -name <instanceName> -k <k> will automatically partition the provided instance
-
-    any other options??????
+    test
     """
-    # if not args:
-    #     args = sys.argv[1:]
+    if not args:
+        args = sys.argv[1:]
 
-    # if len(args) == 0:
-    #     print("Try entering the command: 'partition -guided'")
-    #     return
+    if len(args) == 0:
+        guided()
+        return
 
-    # # if we are here, then we have command line arguments
+    # if we are here, then we have command line arguments
 
-    # for argument in args:
-    #     if argument in ["-h", "-help"]:
-    #         print("Try entering the command: 'partition -guided'")
-    #         return
-    #     if argument == "-guided":
-    #         guided()
+    for argument in args:
+        if argument in ["-h","-help"]:
+            print("Try entering the command: 'partition -guide' or 'partition -g'")
+            print("Conduct numerical experiments with 'partition -exp' or 'partition -e'")
+            return
+        if argument in ['-guided','-g']:
+            guided()
+            return
+        if argument in ['-exp','-e']:
+            experiment()
 
-    # * Since only one command is currently supported, just call guided() for now
-    guided()
+    # # * Since only one command is currently supported, just call guided() for now
+    # guided()
 
 
 

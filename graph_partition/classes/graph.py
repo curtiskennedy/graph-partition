@@ -1,7 +1,6 @@
 # Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
 
-import itertools
 import pprint
 from itertools import chain, combinations
 
@@ -152,6 +151,9 @@ class Graph:
             weight += self.nodes[node]['weight']
         return weight
 
+    def nodeWeight(self, nodeID):
+        return self.nodes[nodeID]['weight']
+
 
     def getLightestNode(self, ignoreList=set()):
         '''
@@ -267,6 +269,10 @@ class Graph:
                     else:
                         lastcheckedU = u
             return False, lastcheckedU
+
+
+
+
 
     ############################################################################
     # CONNECTIVITY
@@ -630,7 +636,111 @@ class Graph:
         return newGraph, addedEdges
         # all thats left to repair the graph is to remove all edges from v1 that occur in v2
 
-        
+
+    def pull3(self, V2):
+        V3 = self
+
+        if V3.weight() > ((1/2) * V3.union(V2).weight()):
+            ignoreList = set()
+            while 1:
+                u, uWeight = V3.getLightestNode(ignoreList)
+                if u == "not set":
+                    return False, V2, V3
+
+                if V3.createView([u]).isAdjacentTo(V2):
+                    # found u
+                    if V3.slash([u]).isConnected():
+                        U = V3.createView([u])
+                    else:
+                        count, compList = V3.slash([u]).countAdjacentComps(V2)
+                        if count == 0:
+                            U_prime = V3.slash([u]).heaviestComp()
+                            U = V3.slash(U_prime)
+                        elif count == 1:
+                            U_prime = compList.pop()
+                            if U_prime.weight() < V3.slash(U_prime).weight():
+                                U = U_prime
+                            else:
+                                U = V3.slash(U_prime)
+                        elif count > 1:
+                            weight = float('inf')
+                            for comp in compList:
+                                if comp.weight() < weight:
+                                    weight = comp.weight()
+                                    U = comp
+                            if U.weight() > (1/2) * V3.weight():
+                                raise Exception("Error here")
+                        
+                    if V2.weight() + U.weight() <= V3.weight():
+                        # Pull happens here
+                        V2 = V2.union(U)
+                        V3 = V3.slash(U)
+                        return True, V2, V3
+                    else:
+                        return False, V2, V3
+
+                else:
+                    ignoreList.add(u)
+        else:
+            return False, V2, V3
+
+
+
+
+    def isAdjacentTo(self, rightGraph):
+        leftGraph = self
+        for node in leftGraph:
+            for edge in leftGraph.nodes[node]['edges']:
+                if edge in rightGraph:
+                    return True
+        return False
+
+    def countAdjacentComps(self, rightGraph):
+        # returns an int of the number of components in self that are adjacent to rightGraph
+        count = 0
+        compList = []
+        for comp in self.findAllConnectedComponents():
+            if comp.isAdjacentTo(rightGraph):
+                count += 1
+                compList.append(comp)
+        return count, compList
+
+
+    def heaviestComp(self):
+        weight = -1
+        result = None
+        for comp in self.findAllConnectedComponents():
+            if comp.weight() > weight:
+                weight = comp.weight()
+                result = comp
+        return result
+
+    def lightestComp(self):
+        weight = float('inf')
+        result = None
+        for comp in self.findAllConnectedComponents():
+            if comp.weight() < weight:
+                weight = comp.weight()
+                result = comp
+        return result
+
+
+    def pull2NEW(self, V1, graphWeight, v2):
+        '''
+        PULL-2
+        '''
+        V2 = self
+        if (V2.weight() > (4/5) * graphWeight):
+            sortedList = list(sorted(self.nodes.keys(), reverse=False))
+            for u in sortedList: # ? Changing order of nodes affects final partition
+                if (u != v2) and V2.isFeasible(u, V1):
+                    uWeight = V2.nodes[u]['weight']
+                    if (V1.weight() + uWeight <= V2.weight() - uWeight):
+                        V2.pullTo(V1, u)
+                        return True, u
+                    else:
+                        lastcheckedU = u
+            return False, lastcheckedU
 
     ############################################################################
 
