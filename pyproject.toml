@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "graph-partition"
 version = "2021.7.19"
-description = ""
+description = "vertex-weighted graph partitioning"
 authors = ["curtiskennedy <curtisdeankennedy@gmail.com>"]
+license = "MIT"
+readme = "README.rst"
+repository = "https://github.com/curtiskennedy/graph-partition"
 
 [tool.poetry.dependencies]
 python = "^3.8"
