@@ -7,6 +7,8 @@ from graph_partition.algorithms.approx1 import approx1
 def approx2(V):
 
     twoConnectedCompList = V.getBicomponents()
+    goal = len(twoConnectedCompList)
+    updateEveryXIterations = int(goal/100)
     cutVerticies = V.cutVerticies()
 
     bestV1 = bestV2 = None
@@ -18,7 +20,12 @@ def approx2(V):
         oldWeights[cutVertex] = V[cutVertex]['weight']
 
     # for each 2-connected component
+    count = 0
     for component in twoConnectedCompList:
+        count += 1
+        if not count % updateEveryXIterations:
+            percent = count/goal
+            print("iteration {}/{} = {:.0%}".format(count, goal, percent))
 
         # adjust weights of cut verticies in this component
         for cutVertex in cutVerticies:
