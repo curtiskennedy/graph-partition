@@ -92,7 +92,7 @@ def approx5(V):
             
     
     # * PART 2
-    # find all pairs of 2-connected components that share one cut vertex
+    # find all pairs of 2-connected components
     print("starting part 2 (approx-4 on each pair of bicomponents)")
     for combo in combinations(compList, 2):
         comp1, comp2 = combo[0], combo[1]
