@@ -8,7 +8,7 @@ def approx2(V):
 
     twoConnectedCompList = V.getBicomponents()
     goal = len(twoConnectedCompList)
-    updateEveryXIterations = int(goal/100)
+    updateEveryXIterations = int(goal/100) + 1
     cutVerticies = V.cutVerticies()
 
     bestV1 = bestV2 = None

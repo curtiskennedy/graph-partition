@@ -90,10 +90,11 @@ def guided():
 
         print("Opening {} located at {}".format(result, "/"+name[:len(name)-len(result)]))
         graph = readInstance(name)
+        goalWeight = graph.weight()
         print("="*len("Graph statistics for {}:".format(result)))
         print("Graph statistics for {}:".format(result))
         print("        # of nodes = {}".format(len(graph.nodes)))
-        print("      Total weight = {}".format(graph.weight()))
+        print("      Total weight = {}".format(goalWeight))
         print("      Is connected = {}".format(graph.isConnected()))
         print("    Is 2-conencted = {}".format(graph.is2Connected()))
         print(" # of bicomponents = {}".format(len(graph.getBicomponents())))
@@ -164,3 +165,9 @@ def guided():
         print("    V3 weight =", V3.weight())
     print("="*len(string))
 
+    if k==3:
+        if V1.weight() + V2.weight() + V3.weight() != goalWeight:
+            print("ERROR - weights of partitions don't add up!")
+    if k==2:
+        if V1.weight() + V2.weight() != goalWeight:
+            print("ERROR - weights of partitions don't add up!")

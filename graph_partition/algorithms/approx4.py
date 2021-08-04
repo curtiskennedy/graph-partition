@@ -29,10 +29,11 @@ def approx4(V):
         return H1.slash([v1]), H2.slash([v1]), V3
     
     # Step 3
-    # if H1.weight() < (1/2) * graphWeight:
-    #     # v1 = H1.shrink()
-    #     # ? what makes v1 different from H1?
-    #     pass
+    # check if assumption is wrong and handle accordingly
+    if H2.weight() < (1/2) * graphWeight:
+        temp = H1
+        H1 = H2
+        H2 = temp
 
     # Step 4
     V1 = H1
@@ -50,7 +51,6 @@ def approx4(V):
     
     # Step 6
     # print("Terminated in step 6")
-    # return V.newPartition(u, True), V1.union(H1), V2.slash([u])
     return V.createView([u]), V1.union(H1), V2.slash([u])
 
 
@@ -70,6 +70,7 @@ if __name__ == "__main__":
     approx4Check(graph)
 
     # print(graph)
+    w = graph.weight()
     
     start = time.time()
     V1, V2, V3 = approx4(graph)
@@ -82,3 +83,9 @@ if __name__ == "__main__":
     print("V3 weight =", V3.weight())
 
     # print(graph)
+    print("\nV1 =", V1.nodeView())
+    print("V2 =", V2.nodeView())
+    print("V3 =", V3.nodeView())
+
+    if V1.weight() + V2.weight() + V3.weight() != w:
+        print("ERROR")
