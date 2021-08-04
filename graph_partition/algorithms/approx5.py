@@ -26,9 +26,7 @@ def approx5(V):
     graphWeight = V.weight() # testing
     bicomps = len(compList)
     goal = .5 * bicomps * (bicomps+1)
-    updateEveryXIterations = int(goal/100)
-    if updateEveryXIterations == 0:
-        updateEveryXIterations = 1
+    updateEveryXIterations = int(goal/100) + 1
 
     # Note the weights of cut vertices before we change them
     oldWeights = {}
