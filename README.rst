@@ -20,7 +20,7 @@ Activate the created environment::
     
 Install the package::
     
-    pip install git+https://github.com/curtiskennedy/graph-partition.git@2021.7.29
+    pip install git+https://github.com/curtiskennedy/graph-partition.git@2021.8.3
 
 Navigate to any folder containing instances (or containing sub-folders of instances)::
     
