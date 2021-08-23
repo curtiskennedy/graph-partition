@@ -18,7 +18,8 @@ def approx6(V:Graph):
     # Step 1
     if v1_weight >= v2_weight >= v3_weight >= ((1/5) * V_Weight):
         print("Step 1")
-        #!stuff needed
+        #!testing needed
+        return V.bfs(v1,v2,v3)
 
 
     # Step 2
@@ -39,8 +40,8 @@ def approx6(V:Graph):
                     found = False
                     break
             if found:
-                print("Found u =", u)
-                return v1, V.slash(heaviestComp.union(V.createView([v1]))), heaviestComp
+                print("2a Found u =", u)
+                return V.createView([v1]), V.slash(heaviestComp.union(V.createView([v1]))), heaviestComp
 
         # 2b
         heaviestCompWeight = -1
@@ -55,6 +56,7 @@ def approx6(V:Graph):
         applicable = True
         while V3.weight() > ((1/2) * V2.union(V3).weight()) and applicable:
             applicable, V2, V3 = V3.pull3(V2)
+        print("2b")
         return V.createView([v1]), V2, V3
 
     
@@ -94,6 +96,7 @@ def approx6(V:Graph):
 
         try:
             # 3a
+            # print("U =", U)
             if U.weight() >= ((1/5) * V_Weight):
                 print("3a")
                 return V1, V.slash(V1.union(U)), U
@@ -105,8 +108,37 @@ def approx6(V:Graph):
                 compList = V.slash(V1.union(V.createView([u]))).findAllConnectedComponents()
                 if len(compList) < 3:
                     raise Exception("ERROR HERE")
-                #!stuff needed
-                # for j in range(len(uList), 1, -1):
+                #!testing needed
+                for j in range(len(uList)-1, 0, -1):
+                    uj = uList[j]
+                    totalWeight = 0
+                    adjCompList = []
+                    for comp in compList:
+                        if comp.isAdjacentTo(V1.createView([uj])):
+                            totalWeight += comp.weight()
+                            adjCompList.append(comp)
+                    # evaluate totalWeight to decide case
+                    if totalWeight < (((1/5)*V_Weight) - V1.nodeWeight(uj)):
+                        # pull uj out of V1 and continues in the for loop
+                        print("3b.1")
+                        V1 = V1.slash([uj])
+                        newComp = Graph({})
+                        for adjComp in adjCompList:
+                            compList.remove(adjComp)
+                            newComp = newComp.union(adjComp)
+                        newComp.addVertex(uj, V.nodes[uj]['edges'], V.nodes[uj]['weight'])
+                        compList.append(newComp)
+
+                        
+                    elif totalWeight > (((4/5)*V_Weight) - V.nodeWeight(uj) - V.nodeWeight(u)):
+                        print("3b.2 unfinished, ignore")
+                        #returns
+                        GU = V.slash([uj,u]).heaviestComp()
+
+                    else:
+                        print("3b.3 unfinished, ignore")
+                        #returns
+
 
         except AttributeError:
             # 3c
@@ -129,10 +161,10 @@ if __name__ == "__main__":
     import time
 
     ##################################
-    Instance_Name = "gg_05_05_a_1"
+    Instance_Name = "ap6test"
     #################################
 
-    Folder_Name = "test-instances"
+    Folder_Name = "all-instances/local_testing"
     File_Extension = ".in"
     path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
     graph = readInstance(path)
@@ -153,3 +185,7 @@ if __name__ == "__main__":
     print("V3 weight =", V3.weight())
     print(graph.weight())
     print(V1.weight()+V2.weight()+V3.weight())
+
+    # print(V1)
+    # print(V2)
+    # print(V3)

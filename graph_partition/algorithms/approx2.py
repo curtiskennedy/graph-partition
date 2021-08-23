@@ -67,10 +67,10 @@ if __name__ == "__main__":
     import time
 
     ##################################
-    Instance_Name = "custom"
+    Instance_Name = "barao_1913_2752"
     #################################
 
-    Folder_Name = "test-instances"
+    Folder_Name = "all-instances/real"
     File_Extension = ".in"
     path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
     graph = readInstance(path)

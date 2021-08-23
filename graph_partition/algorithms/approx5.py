@@ -215,10 +215,10 @@ if __name__ == "__main__":
     import time
 
     ##################################
-    Instance_Name = "unicamp_624_901"
+    Instance_Name = "nyc_chelsea_822_1228"
     #################################
 
-    Folder_Name = "test-instances"
+    Folder_Name = "all-instances/real"
     File_Extension = ".in"
     path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
     graph = readInstance(path)
@@ -226,11 +226,11 @@ if __name__ == "__main__":
 
     # print("initial graph =", graph)
     print("\n+++++++++++++++++++++++++++++++++++++++++++")
-    bicomps = len(graph.getBicomponents())
-    print("how many bicomponents are there?", bicomps)
+    # bicomps = len(graph.getBicomponents())
+    # print("how many bicomponents are there?", bicomps)
     print("initial weight =", graph.weight())
-    goal = .5 * bicomps * (bicomps+1)
-    print("there should be {} iterations".format(goal))
+    # goal = .5 * bicomps * (bicomps+1)
+    # print("there should be {} iterations".format(goal))
     
     start = time.time()
     V1, V2, V3 = approx5(graph)

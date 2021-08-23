@@ -297,7 +297,7 @@ class Graph:
         Returns true/false whether the partition V1 + u, V2 - u is feasible
         '''
         V2 = self
-        return (V2.canDelNode(u) and V2.canAddNode(u, V1))
+        return (V2.canAddNode(u, V1) and V2.canDelNode(u))
 
 
     def canAddNode(self, node, graph):
@@ -742,6 +742,39 @@ class Graph:
                         lastcheckedU = u
             return False, lastcheckedU
 
+
+
+    def bfs(self, v1, v2, v3):
+        V1 = Graph({})
+        V2 = Graph({})
+        V3 = Graph({})
+        queue = []
+        queue.append(v1)
+        visited = set()
+        visited.add(v1)
+        parent = {v1:v1}
+        while queue != []:
+            node = queue.pop(0)
+            if node == v1:
+                V1.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+            elif node == v2:
+                V2.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+            elif node == v3:
+                V3.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+            else:
+                if parent[node] in V1.nodes:
+                    V1.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+                elif parent[node] in V2.nodes:
+                    V2.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+                else:
+                    V3.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+                                                
+            for edge in self.nodes[node]['edges']:
+                if edge not in visited and edge in self.nodes:
+                    visited.add(edge)
+                    queue.append(edge)
+                    parent[edge] = node
+        return V1, V2, V3
     ############################################################################
 
 
@@ -750,15 +783,21 @@ if __name__ == "__main__":
     import time
 
     ##################################
-    Instance_Name = "gg_05_05_a_1"
+    Instance_Name = "bfscheck"
     #################################
 
-    Folder_Name = "test-instances"
+    Folder_Name = "all-instances/local_testing"
     File_Extension = ".in"
     path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
     graph = readInstance(path)
 
-    print(graph)
+    print(graph.nodeView())
+    V1, V2, V3 = graph.bfs(1,0,6)
+    print("V1 =", V1.nodeView())
+    print("V2 =", V2.nodeView())
+    print("V3 =", V3.nodeView())
+
+
 
     # print(len(graph.findAllConnectedComponents()))
     # for comp in graph.findAllConnectedComponents():
