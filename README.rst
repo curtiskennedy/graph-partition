@@ -13,7 +13,7 @@ Graph-Partition
 
 Installation (linux commands shown)
 ############
-Create a Python3.8 virtual environment (confirm version with 'python --version')::
+Create a Python3.8 virtual environment (confirm version with 'python3.8 --version')::
     
     python3.8 -m venv env
 
