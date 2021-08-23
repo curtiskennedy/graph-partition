@@ -1,13 +1,11 @@
-# Curtis Kennedy
+# Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
 
 from graph_partition.classes.graph import Graph
 
 
 def readInstance(path):
-    '''
-    Notes:
-    '''      
+    
     with open(path, "r") as infile:
         data = infile.readlines()
     graph = Graph({})
@@ -24,18 +22,3 @@ def readInstance(path):
         graph.addEdge(dest1, dest2)
         graph.addEdge(dest2, dest1)
     return graph
-
-
-if __name__ == "__main__":
-
-    ##################################
-    Instance_Name = "gg_05_05_a_1"
-    #################################
-
-    Folder_Name = "test-instances"
-    File_Extension = ".in"
-    path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
-    graph = readInstance(path)
-
-
-    print(graph)

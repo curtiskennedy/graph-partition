@@ -1,5 +1,3 @@
-# Curtis Kennedy
-# ckennedy@ualberta.ca
 
 import sys
 from graph_partition.cli import guided, experiment

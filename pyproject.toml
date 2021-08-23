@@ -2,7 +2,7 @@
 name = "graph-partition"
 version = "2021.8.22b"
 description = "vertex-weighted graph partitioning"
-authors = ["curtiskennedy <curtisdeankennedy@gmail.com>"]
+authors = ["Curtis Kennedy <ckennedy@ualberta.ca>"]
 license = "MIT"
 readme = "README.rst"
 repository = "https://github.com/curtiskennedy/graph-partition"

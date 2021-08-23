@@ -1,4 +1,4 @@
-# Curtis Kennedy
+# Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
 
 from graph_partition.algorithms.approx6 import approx6
@@ -207,47 +207,3 @@ def approx8(V):
     # print("ran {} iterations".format(count))
 
     return V1, V2, V3
-
-
-if __name__ == "__main__":
-    from graph_partition.classes.instanceManager import readInstance
-    from graph_partition.algorithms.check_instance import approx8Check
-    import time
-
-    ##################################
-    Instance_Name = "rnd_100_150_a_1"
-    #################################
-
-    Folder_Name = "all-instances/bcpk_random/random/rnd_n100/m150/a"
-    File_Extension = ".in"
-    path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
-    graph = readInstance(path)
-    approx8Check(graph)
-
-    # print("initial graph =", graph)
-    print("\n+++++++++++++++++++++++++++++++++++++++++++")
-    bicomps = len(graph.getBicomponents())
-    print("how many bicomponents are there?", bicomps)
-    print("initial weight =", graph.weight())
-    goal = .5 * bicomps * (bicomps+1)
-    print("there should be {} iterations".format(goal))
-    
-    start = time.time()
-    V1, V2, V3 = approx8(graph)
-    end = time.time()
-
-    print("+++++++++++++++++++++++++++++++++++++++++++")
-    print("Instance name =", Instance_Name)
-    print("Time taken =", end-start, "seconds")
-    print("V1 weight =", V1.weight())
-    print("V2 weight =", V2.weight())
-    print("V3 weight =", V3.weight())
-    print("+++++++++++++++++++++++++++++++++++++++++++")
-
-    # print("\nResulting partition:")
-    # print("V1=",V1)
-    # print("\nV2=",V2)
-    # print("\nV3=",V3, "\n")
-
-    # print("graph weight after approx5 =", graph.weight())
-    # print(graph)

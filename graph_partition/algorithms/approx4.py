@@ -1,6 +1,5 @@
 # Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
-# Note: input graph V is not altered?
 
 
 def approx4(V):
@@ -40,7 +39,8 @@ def approx4(V):
     V2 = V.slash(H1)
 
     # Step 5
-    v2 = H2.slash(H1).getHeaviestNode()
+    v2 = V2.getHeaviestNode()
+    # v2 = H2.slash(H1).getHeaviestNode()
     # v2Check = V2.getHeaviestNode()
     # if v2 != v2Check:
     #     raise Exception("ERROR")
@@ -55,40 +55,3 @@ def approx4(V):
     # Step 6
     # print("Terminated in step 6")
     return V.createView([u]), V1.union(H1), V2.slash([u])
-
-
-if __name__ == "__main__":
-    from graph_partition.classes.instanceManager import readInstance
-    from graph_partition.algorithms.check_instance import approx4Check
-    import time
-
-    ##################################
-    Instance_Name = "custom"
-    #################################
-
-    Folder_Name = "test-instances"
-    File_Extension = ".in"
-    path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
-    graph = readInstance(path)
-    approx4Check(graph)
-
-    # print(graph)
-    w = graph.weight()
-    
-    start = time.time()
-    V1, V2, V3 = approx4(graph)
-    end = time.time()
-
-    print("\nInstance name =", Instance_Name)
-    print("Time taken =", end-start, "seconds")
-    print("V1 weight =", V1.weight())
-    print("V2 weight =", V2.weight())
-    print("V3 weight =", V3.weight())
-
-    # print(graph)
-    print("\nV1 =", V1.nodeView())
-    print("V2 =", V2.nodeView())
-    print("V3 =", V3.nodeView())
-
-    if V1.weight() + V2.weight() + V3.weight() != w:
-        print("ERROR")

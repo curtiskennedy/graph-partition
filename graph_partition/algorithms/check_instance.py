@@ -1,4 +1,4 @@
-# Curtis Kennedy
+# Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
 
 

@@ -30,34 +30,3 @@ def approx3(V):
     # Step 4
     # print("termination due to moving u from V2 to V1")
     return V1.createView([u]), V1.slash([u]), V2
-
-
-
-if __name__ == "__main__":
-    from graph_partition.classes.instanceManager import readInstance
-    from graph_partition.algorithms.check_instance import approx3Check
-    import time
-
-    ##################################
-    Instance_Name = "gg_05_05_a_1"
-    #################################
-
-    Folder_Name = "test-instances"
-    File_Extension = ".in"
-    path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
-    graph = readInstance(path)
-    approx3Check(graph)
-
-    # print(graph)
-    
-    start = time.time()
-    V1, V2, V3 = approx3(graph)
-    end = time.time()
-
-    print("\nInstance name =", Instance_Name)
-    print("Time taken =", end-start, "seconds")
-    print("V1 weight =", V1.weight())
-    print("V2 weight =", V2.weight())
-    print("V3 weight =", V3.weight())
-
-    # print(graph)

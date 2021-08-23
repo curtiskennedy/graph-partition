@@ -1,6 +1,6 @@
 # Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
-# Note: input graph V is not altered?
+
 from graph_partition.algorithms.approx1 import approx1
 from graph_partition import Graph
 
@@ -66,41 +66,3 @@ def approx7(V:Graph):
             break
     print("Step 2c")
     return V1, V2, V3
-
-
-
-if __name__ == "__main__":
-    from graph_partition.classes.instanceManager import readInstance
-    from graph_partition.algorithms.check_instance import approx7Check
-    import time
-
-    ##################################
-    Instance_Name = "custom"
-    #################################
-
-    Folder_Name = "all-instances"
-    File_Extension = ".in"
-    path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
-    graph = readInstance(path)
-    approx7Check(graph)
-
-    # print(graph)
-    w = graph.weight()
-    
-    start = time.time()
-    V1, V2, V3 = approx7(graph)
-    end = time.time()
-
-    print("\nInstance name =", Instance_Name)
-    print("Time taken =", end-start, "seconds")
-    print("V1 weight =", V1.weight())
-    print("V2 weight =", V2.weight())
-    print("V3 weight =", V3.weight())
-
-    # print(graph)
-    print("\nV1 =", V1.nodeView())
-    print("V2 =", V2.nodeView())
-    print("V3 =", V3.nodeView())
-
-    if V1.weight() + V2.weight() + V3.weight() != w:
-        print("ERROR")
