@@ -188,15 +188,15 @@ def guided():
 
 
 
-
+    opt = goalWeight/k
     string = "Instance name = {}".format(result)
     print("\n"+ "="*len(string))
     print(string)
     print("   Time taken =", end-start, "seconds")
-    print("    V1 weight =", V1_weight)
-    print("    V2 weight =", V2_weight)
+    print("    V1 weight = {}   Ratio = {:.2f}".format(V1_weight, max(opt/V1_weight, V1_weight/opt)))
+    print("    V2 weight = {}   Ratio = {:.2f}".format(V2_weight, max(opt/V2_weight, V2_weight/opt)))
     if k == 3:
-        print("    V3 weight =", V3_weight)
+        print("    V3 weight = {}   Ratio = {:.2f}".format(V3_weight, max(opt/V2_weight, V2_weight/opt)))
     print("="*len(string))
 
     if k==3:
