@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "graph-partition"
-version = "2021.8.22"
+version = "2021.8.22b"
 description = "vertex-weighted graph partitioning"
 authors = ["curtiskennedy <curtisdeankennedy@gmail.com>"]
 license = "MIT"
