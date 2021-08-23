@@ -41,6 +41,9 @@ def approx4(V):
 
     # Step 5
     v2 = H2.slash(H1).getHeaviestNode()
+    # v2Check = V2.getHeaviestNode()
+    # if v2 != v2Check:
+    #     raise Exception("ERROR")
     while (V2.weight() > (1/2) * graphWeight):
         applicable, u = V2.pull2(V1, graphWeight, v2)
 

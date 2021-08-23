@@ -7,6 +7,9 @@ Graph-Partition
 | Approx-3: MIN-MAX k=3 on 2-connected graphs
 | Approx-4: MIN-MAX k=3 on connected graphs with two bicomponents
 | Approx-5: MIN-MAX k=3 on connected graphs
+| Approx-6: MAX-MIN k=3 on 2-connected graphs
+| Approx-7: MAX-MIN k=3 on connected graphs with two bicomponents
+| Approx-8: MAX-MIN k=3 on connected graphs
 
 Installation (linux commands shown)
 ############
@@ -20,7 +23,7 @@ Activate the created environment::
     
 Install the package::
     
-    pip install git+https://github.com/curtiskennedy/graph-partition.git@2021.8.3
+    pip install git+https://github.com/curtiskennedy/graph-partition.git@2021.8.22
 
 Navigate to any folder containing instances (or containing sub-folders of instances)::
     

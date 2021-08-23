@@ -1,12 +1,20 @@
 from __future__ import print_function, unicode_literals
+
 import os
 import time
+import csv
+
 from collections import defaultdict
-
 from PyInquirer import style_from_dict, Token, prompt
-
+from prompt_toolkit.terminal.vt100_output import Vt100_Output
 from pyfiglet import Figlet
-from graph_partition import readInstance, checkAll, approx1, approx2, approx3, approx4, approx5
+from graph_partition import readInstance, checkAll, approx1, approx2, approx3, approx4, approx5, approx6, approx7, approx8
+
+
+def experiment():
+    print("Loading CLI...")
+    f = Figlet(font='slant')
+    print(f.renderText("graph-partition"))
 
 
 def guided():
@@ -133,30 +141,76 @@ def guided():
         print("Running Approx-5 ...")
         algo = approx5
         k=3
+    elif answers['algo'] == "Approx-6 for MAX-MIN k=3 (recommended)":
+        print("Running Approx-6 ...")
+        algo = approx6
+        k=3
+    elif answers['algo'] == "Approx-7 for MAX-MIN k=3":
+        print("Running Approx-7 ...")
+        algo = approx7
+        k=3
+    elif answers['algo'] == "Approx-8 for MAX-MIN k=3":
+        print("Running Approx-8 ...")
+        algo = approx8
+        k=3
 
     if k==2:
         start = time.time()
         V1, V2 = algo(graph)
         end = time.time()
+        V1_weight = V1.weight()
+        V2_weight = V2.weight()
+        if V1_weight > V2_weight:
+            V1, V2 = V2, V1
+            V1_weight, V2_weight = V2_weight, V1_weight
 
     elif k==3:
         start = time.time()
         V1, V2, V3 = algo(graph)
         end = time.time()
 
+        V1_weight = V1.weight()
+        V2_weight = V2.weight()
+        V3_weight = V3.weight()
+        min_weight = min(V1_weight,V2_weight,V3_weight)
+        max_weight = max(V1_weight,V2_weight,V3_weight)
+        if min_weight == V2_weight:
+            V1, V2 = V2, V1
+            V1_weight, V2_weight = V2_weight, V1_weight
+
+        if max_weight == V2_weight:
+            V2, V3 = V3, V2
+            V2_weight, V3_weight = V3_weight, V2_weight
+
+        if min_weight == V3_weight or max_weight == V1_weight:
+            V1, V3 = V3, V1
+            V1_weight, V3_weight = V3_weight, V1_weight
+
+
+
+
     string = "Instance name = {}".format(result)
     print("\n"+ "="*len(string))
     print(string)
     print("   Time taken =", end-start, "seconds")
-    print("    V1 weight =", V1.weight())
-    print("    V2 weight =", V2.weight())
+    print("    V1 weight =", V1_weight)
+    print("    V2 weight =", V2_weight)
     if k == 3:
-        print("    V3 weight =", V3.weight())
+        print("    V3 weight =", V3_weight)
     print("="*len(string))
 
     if k==3:
-        if V1.weight() + V2.weight() + V3.weight() != goalWeight:
+        if V1_weight + V2_weight + V3_weight != goalWeight:
             print("ERROR - weights of partitions don't add up!")
+        elif not (V1.isConnected() and V2.isConnected() and V3.isConnected()):
+            print("ERROR - partition is not connected")
+        else:
+            print("Partition checked!")
     if k==2:
-        if V1.weight() + V2.weight() != goalWeight:
+        if V1_weight + V2_weight != goalWeight:
             print("ERROR - weights of partitions don't add up!")
+        elif not (V1.isConnected() and V2.isConnected()):
+            print("ERROR - partition is not connected")
+        else:
+            print("Partition checked!")
+        

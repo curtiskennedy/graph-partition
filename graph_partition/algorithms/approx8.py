@@ -1,25 +1,25 @@
 # Curtis Kennedy
 # ckennedy@ualberta.ca
 
-from graph_partition.algorithms.approx3 import approx3
-from graph_partition.algorithms.approx4 import approx4
+from graph_partition.algorithms.approx6 import approx6
+from graph_partition.algorithms.approx7 import approx7
 
 from itertools import combinations
 
 
-def approx5(V):
+def approx8(V):
     count = 0
     
     bestV1P1 = None
     bestV2P1 = None
     bestV3P1 = None
-    maxP1Weight = float('inf')
+    minP1Weight = -1
 
     bestV1P2 = None
     bestV2P2 = None
     bestV3P2 = None   
-    maxP2Weight = float('inf')
-    # Note: using MIN-MAX to evaluate best partition
+    minP2Weight = -1
+    # Note: using MAX-MIN to evaluate best partition
     
     compList = V.getBicomponents()
     cutVerticies = V.cutVerticies()
@@ -35,7 +35,7 @@ def approx5(V):
 
 
     # * PART 1
-    print("starting part 1 (approx-3 on each bicomponent)")
+    print("starting part 1 (approx-6 on each bicomponent)")
     for component in compList:
         count+=1
         if not count % updateEveryXIterations:
@@ -54,8 +54,8 @@ def approx5(V):
                 newWeight = toCollapse.weight()
                 component[cutVertex]['weight'] = newWeight
 
-        # print("\nCALLING APPROX-3 ON COMPONENT =", component)
-        V1, V2, V3 = approx3(component)
+        # print("\nCALLING APPROX-6 ON COMPONENT =", component)
+        V1, V2, V3 = approx6(component)
         # print("\nV1 =", V1)
         # print("\nV2 =", V2)
         # print("\nV3 =", V3)
@@ -78,20 +78,20 @@ def approx5(V):
 
         # v1w, v2w, v3w = V1.weight(), V2.weight(), V3.weight()
         # tot = v1w + v2w + v3w
-        # print("approx-3 results {} + {} + {} = {}".format(v1w, v2w, v3w, tot))
+        # print("approx-6 results {} + {} + {} = {}".format(v1w, v2w, v3w, tot))
 
-        result = max(V1.weight(), V2.weight(), V3.weight())
-        if result < maxP1Weight:
+        result = min(V1.weight(), V2.weight(), V3.weight())
+        if result > minP1Weight:
             bestV1P1 = V1
             bestV2P1 = V2
             bestV3P1 = V3
-            maxP1Weight = result
+            minP1Weight = result
 
             
     
     # * PART 2
     # find all pairs of 2-connected components
-    print("starting part 2 (approx-4 on each pair of bicomponents)")
+    print("starting part 2 (approx-7 on each pair of bicomponents)")
     for combo in combinations(compList, 2):
         comp1, comp2 = combo[0], combo[1]
         # print("------------------------------------------------------------")
@@ -119,7 +119,7 @@ def approx5(V):
         # print(removedEdges)
         V.reAddEdges(removedEdges)
 
-        # * Build the graph to call approx-4 on
+        # * Build the graph to call approx-7 on
         # figure out if overlap is required, and what it should be
         # print("need to collapse:", collapsedOn)
         requiredOverlap = set()
@@ -146,7 +146,7 @@ def approx5(V):
         if union.weight() != graphWeight:
             raise Exception("error in collapsing")
 
-        V1, V2, V3 = approx4(union)
+        V1, V2, V3 = approx7(union)
         # print("\nV1 = {} weight = {}".format(V1.nodeView(), V1.weight()))
         # print("\nV2 = {} weight = {}".format(V2.nodeView(), V2.weight()))
         # print("\nV3 = {} weight = {}".format(V3.nodeView(), V3.weight()))
@@ -179,25 +179,25 @@ def approx5(V):
         # evaluate the partition
         # v1w, v2w, v3w = V1.weight(), V2.weight(), V3.weight()
         # tot = v1w + v2w + v3w
-        # print("approx-4 results {} + {} + {} = {}".format(v1w, v2w, v3w, tot))
-        result = max(V1.weight(), V2.weight(), V3.weight())
-        if result < maxP2Weight:
+        # print("approx-7 results {} + {} + {} = {}".format(v1w, v2w, v3w, tot))
+        result = min(V1.weight(), V2.weight(), V3.weight())
+        if result > minP2Weight:
             bestV1P2 = V1
             bestV2P2 = V2
             bestV3P2 = V3
-            maxP2Weight = result
+            minP2Weight = result
                 
         
     # return the best MIN-MAX
-    if maxP1Weight < maxP2Weight:
+    if minP1Weight > minP2Weight:
         # Part 1 is better
-        print("Using part 1 (approx-3) result")
+        print("Using part 1 (approx-6) result")
         V1 = bestV1P1
         V2 = bestV2P1
         V3 = bestV3P1
     else:
         # Part 2 is better or same result
-        print("Using part 2 (approx-4) result")
+        print("Using part 2 (approx-7) result")
         V1 = bestV1P2
         V2 = bestV2P2
         V3 = bestV3P2
@@ -211,29 +211,29 @@ def approx5(V):
 
 if __name__ == "__main__":
     from graph_partition.classes.instanceManager import readInstance
-    from graph_partition.algorithms.check_instance import approx5Check
+    from graph_partition.algorithms.check_instance import approx8Check
     import time
 
     ##################################
-    Instance_Name = "nyc_chelsea_822_1228"
+    Instance_Name = "rnd_100_150_a_1"
     #################################
 
-    Folder_Name = "all-instances/real"
+    Folder_Name = "all-instances/bcpk_random/random/rnd_n100/m150/a"
     File_Extension = ".in"
     path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
     graph = readInstance(path)
-    approx5Check(graph)
+    approx8Check(graph)
 
     # print("initial graph =", graph)
     print("\n+++++++++++++++++++++++++++++++++++++++++++")
-    # bicomps = len(graph.getBicomponents())
-    # print("how many bicomponents are there?", bicomps)
+    bicomps = len(graph.getBicomponents())
+    print("how many bicomponents are there?", bicomps)
     print("initial weight =", graph.weight())
-    # goal = .5 * bicomps * (bicomps+1)
-    # print("there should be {} iterations".format(goal))
+    goal = .5 * bicomps * (bicomps+1)
+    print("there should be {} iterations".format(goal))
     
     start = time.time()
-    V1, V2, V3 = approx5(graph)
+    V1, V2, V3 = approx8(graph)
     end = time.time()
 
     print("+++++++++++++++++++++++++++++++++++++++++++")
