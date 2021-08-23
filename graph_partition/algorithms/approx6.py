@@ -17,7 +17,7 @@ def approx6(V:Graph):
 
     # Step 1
     if v1_weight >= v2_weight >= v3_weight >= ((1/5) * V_Weight):
-        print("Step 1")
+        print("Step 1 TEST")
         #!testing needed
         return V.bfs(v1,v2,v3)
 
@@ -104,7 +104,7 @@ def approx6(V:Graph):
             # 3b
             # else
             if U.weight() < ((1/5) * V_Weight):
-                print("3b")
+                print("3b TEST")
                 compList = V.slash(V1.union(V.createView([u]))).findAllConnectedComponents()
                 if len(compList) < 3:
                     raise Exception("ERROR HERE")
@@ -120,7 +120,7 @@ def approx6(V:Graph):
                     # evaluate totalWeight to decide case
                     if totalWeight < (((1/5)*V_Weight) - V1.nodeWeight(uj)):
                         # pull uj out of V1 and continues in the for loop
-                        print("3b.1")
+                        print("3b.1 TEST")
                         V1 = V1.slash([uj])
                         newComp = Graph({})
                         for adjComp in adjCompList:
@@ -131,13 +131,42 @@ def approx6(V:Graph):
 
                         
                     elif totalWeight > (((4/5)*V_Weight) - V.nodeWeight(uj) - V.nodeWeight(u)):
-                        print("3b.2 unfinished, ignore")
+                        print("3b.2 TEST")
                         #returns
                         GU = V.slash([uj,u]).heaviestComp()
+                        V2 = V.createView([uj])
+                        while V2.weight() < ((1/5)*V_Weight):
+                            compToAdd = compList.pop(0)
+                            if compToAdd != GU and compToAdd.isAdjacentTo(V2):
+                                V2 = V2.union(compToAdd)
+                            else:
+                                compList.append(compToAdd)
+                        return U, V2, V.slash(U.union(V2))
 
                     else:
-                        print("3b.3 unfinished, ignore")
+                        print("3b.3 TEST")
                         #returns
+                        V2 = V.createView([uj])
+                        while V2.weight() < ((1/5)*V_Weight):
+                            compToAdd = compList.pop(0)
+                            if compToAdd.isAdjacentTo(V2):
+                                V2 = V2.union(compToAdd)
+                            else:
+                                compList.append(compToAdd)
+                        V1 = V1.slash([uj])
+                        while V1.weight() < ((1/5)*V_Weight):
+                            compToAdd = compList.pop(0)
+                            if compToAdd.isAdjacentTo(V1):
+                                V1 = V1.union(compToAdd)
+                            else:
+                                compList.append(compToAdd)
+                        V3 = V.createView([u])
+                        for comp in compList:
+                            V3 = V3.union(comp)
+                        return V1, V2, V3
+
+
+
 
 
         except AttributeError:
