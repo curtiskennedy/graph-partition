@@ -66,21 +66,21 @@ def checkAll(graph):
     '''
     result = []
 
-    if approx1Check(graph,True):
+    if approx1Check(graph):
         result.append("Approx-1 for MAX-MIN k=2 (recommended)")
-    if approx2Check(graph,True):
+    if approx2Check(graph):
         result.append("Approx-2 for MAX-MIN k=2")
-    if approx3Check(graph,True):
+    if approx3Check(graph):
         result.append("Approx-3 for MIN-MAX k=3 (recommended)")
-    if approx4Check(graph,True):
+    if approx4Check(graph):
         result.append("Approx-4 for MIN-MAX k=3")
-    if approx5Check(graph,True):
+    if approx5Check(graph):
         result.append("Approx-5 for MIN-MAX k=3")
-    if approx6Check(graph,True):
+    if approx6Check(graph):
         result.append("Approx-6 for MAX-MIN k=3 (recommended)")
-    if approx7Check(graph,True):
+    if approx7Check(graph):
         result.append("Approx-7 for MAX-MIN k=3")
-    if approx8Check(graph,True):
+    if approx8Check(graph):
         result.append("Approx-8 for MAX-MIN k=3")
 
     return result
