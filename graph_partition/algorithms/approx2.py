@@ -52,37 +52,8 @@ def approx2(V):
         # evaluate the partition using MAX-MIN
         minWeight = min(V1.weight(), V2.weight())
         if minWeight > maxMinWeight:
-            bestV1 = V1
-            bestV2 = V2
+            bestV1, bestV2 = V1, V2
             maxMinWeight = minWeight
         
     # return the best
     return bestV1, bestV2
-
-
-
-if __name__ == "__main__":
-    from graph_partition.classes.instanceManager import readInstance
-    from graph_partition.algorithms.check_instance import approx2Check
-    import time
-
-    ##################################
-    Instance_Name = "barao_1913_2752"
-    #################################
-
-    Folder_Name = "all-instances/real"
-    File_Extension = ".in"
-    path = '../{}/{}{}'.format(Folder_Name, Instance_Name, File_Extension)
-    graph = readInstance(path)
-    approx2Check(graph)
-
-    # print(graph)
-    
-    start = time.time()
-    V1, V2 = approx2(graph)
-    end = time.time()
-
-    print("\nInstance name =", Instance_Name)
-    print("Time taken =", end-start, "seconds")
-    print("V1 weight =", V1.weight())
-    print("V2 weight =", V2.weight())

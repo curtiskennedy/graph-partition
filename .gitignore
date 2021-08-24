@@ -2,4 +2,4 @@
 .vscode
 all-instances
 ignore
-
+*.in

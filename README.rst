@@ -2,6 +2,8 @@
 Graph-Partition
 ***************
 
+Algorithms implemented as described in "Approximation algorithms for the maximally balanced connected graph tripartition problem" by Chen et al. 2019.
+
 | Approx-1: MAX-MIN k=2 on 2-connected graphs
 | Approx-2: MAX-MIN k=2 on connected graphs
 | Approx-3: MIN-MAX k=3 on 2-connected graphs
@@ -23,7 +25,7 @@ Activate the created environment::
     
 Install the package::
     
-    pip install git+https://github.com/curtiskennedy/graph-partition.git@2021.8.22b
+    pip install git+https://github.com/curtiskennedy/graph-partition.git@2021.8.24
 
 Navigate to any folder containing instances (or containing sub-folders of instances)::
     

@@ -6,7 +6,6 @@ import csv
 
 from collections import defaultdict
 from PyInquirer import style_from_dict, Token, prompt
-from prompt_toolkit.terminal.vt100_output import Vt100_Output
 from pyfiglet import Figlet
 from graph_partition import readInstance, checkAll, approx1, approx2, approx3, approx4, approx5, approx6, approx7, approx8
 
@@ -188,15 +187,15 @@ def guided():
 
 
 
-
+    opt = goalWeight/k
     string = "Instance name = {}".format(result)
     print("\n"+ "="*len(string))
     print(string)
     print("   Time taken =", end-start, "seconds")
-    print("    V1 weight =", V1_weight)
-    print("    V2 weight =", V2_weight)
+    print("    V1 weight = {}   Ratio = {:.2f}".format(V1_weight, max(opt/V1_weight, V1_weight/opt)))
+    print("    V2 weight = {}   Ratio = {:.2f}".format(V2_weight, max(opt/V2_weight, V2_weight/opt)))
     if k == 3:
-        print("    V3 weight =", V3_weight)
+        print("    V3 weight = {}   Ratio = {:.2f}".format(V3_weight, max(opt/V2_weight, V2_weight/opt)))
     print("="*len(string))
 
     if k==3:
