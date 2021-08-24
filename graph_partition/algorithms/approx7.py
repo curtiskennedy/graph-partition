@@ -2,20 +2,16 @@
 # ckennedy@ualberta.ca
 
 from graph_partition.algorithms.approx1 import approx1
-from graph_partition import Graph
 
 
-def approx7(V:Graph):
+def approx7(V):
+
     graphWeight = V.weight()
     # Find H1 and H2
     compList = V.getBicomponents()
     H1 = compList[0]
     H2 = compList[1]
     v0 = V.cutVerticies().pop()
-
-    # print("v0 = {} with weight = {}".format(v0, V.nodeWeight(v0)))
-    # print("H1 weight = {}".format(H1.weight()))
-    # print("H2 weight = {}".format(H2.weight()))
 
     # Step 1
     if V.nodeWeight(v0) >= min((1/5)*graphWeight,H1.slash([v0]).weight(),H2.slash([v0]).weight()):

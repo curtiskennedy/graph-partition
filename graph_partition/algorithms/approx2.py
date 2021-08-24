@@ -52,8 +52,7 @@ def approx2(V):
         # evaluate the partition using MAX-MIN
         minWeight = min(V1.weight(), V2.weight())
         if minWeight > maxMinWeight:
-            bestV1 = V1
-            bestV2 = V2
+            bestV1, bestV2 = V1, V2
             maxMinWeight = minWeight
         
     # return the best

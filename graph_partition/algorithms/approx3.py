@@ -12,7 +12,6 @@ def approx3(V):
     # Step 1
     if (v1.weight() >= (2/5) * graphWeight):
         V1, V2 = V.slash(v1).anyBipartition()
-        # print("termination in step 1")
         return V1, V2, v1
     
     # Step 2
@@ -24,9 +23,7 @@ def approx3(V):
         applicable, u = V2.pull2(V1, graphWeight, v2)
 
         if not applicable:
-            # print("last checked Pull-2 operation not executed")
             return V2.createView([u]), V1, V2.slash([u])
 
     # Step 4
-    # print("termination due to moving u from V2 to V1")
     return V1.createView([u]), V1.slash([u]), V2

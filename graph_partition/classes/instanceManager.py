@@ -5,6 +5,9 @@ from graph_partition.classes.graph import Graph
 
 
 def readInstance(path):
+    '''
+    Reads a specific format of .in file and returns a graph instance
+    '''
     
     with open(path, "r") as infile:
         data = infile.readlines()

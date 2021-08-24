@@ -1,26 +1,24 @@
 # Curtis Kennedy, Terence Pun
 # ckennedy@ualberta.ca
 
-from graph_partition.algorithms.check_instance import approx6Check
 from graph_partition import Graph
 
 
-def approx6(V:Graph):
+def approx6(V):
 
-    V_Weight = V.weight()
-    v1 = V.getHeaviestNode()
-    v1_weight = V.nodeWeight(v1)
-    v2 = V.getHeaviestNode({v1})
-    v2_weight = V.nodeWeight(v2)
-    v3 = V.getHeaviestNode({v1, v2})
-    v3_weight = V.nodeWeight(v3)
+    V_Weight = V.weight()               # total weight
+    v1 = V.getHeaviestNode()            # heaviest node
+    v1_weight = V.nodeWeight(v1)        # heaviest node weight
+    v2 = V.getHeaviestNode({v1})        # second heaviest node
+    v2_weight = V.nodeWeight(v2)        # second heaviest node weight
+    v3 = V.getHeaviestNode({v1, v2})    # third heaviest node
+    v3_weight = V.nodeWeight(v3)        # third heaviest node weight
 
     # Step 1
     if v1_weight >= v2_weight >= v3_weight >= ((1/5) * V_Weight):
         print("Step 1 TEST")
         #!testing needed
         return V.bfs(v1,v2,v3)
-
 
     # Step 2
     if v1_weight >= ((1/5) * V_Weight) > v3_weight:
@@ -59,7 +57,7 @@ def approx6(V:Graph):
         print("2b")
         return V.createView([v1]), V2, V3
 
-    
+
     # Step 3
     if ((1/5) * V_Weight) > v1_weight:
         print("Step 3")
@@ -92,7 +90,6 @@ def approx6(V:Graph):
                 print("Found u =", u)
                 U = heaviestComp
                 break
-        
 
         try:
             # 3a
@@ -129,7 +126,6 @@ def approx6(V:Graph):
                         newComp.addVertex(uj, V.nodes[uj]['edges'], V.nodes[uj]['weight'])
                         compList.append(newComp)
 
-                        
                     elif totalWeight > (((4/5)*V_Weight) - V.nodeWeight(uj) - V.nodeWeight(u)):
                         print("3b.2 TEST")
                         #returns
@@ -164,10 +160,6 @@ def approx6(V:Graph):
                         for comp in compList:
                             V3 = V3.union(comp)
                         return V1, V2, V3
-
-
-
-
 
         except AttributeError:
             # 3c

@@ -2,132 +2,62 @@
 # ckennedy@ualberta.ca
 
 
-def approx1Check(graph, bool=False):
+def approx1Check(graph):
     # requirements:
     # - biconnected
     # - 2 or more nodes
-    if bool:
-        return graph.is2Connected() and len(graph.nodes) >= 2
-
-    if not graph.is2Connected():
-        raise Exception("graph is NOT 2-connected!")
-    if len(graph.nodes) < 2:
-        raise Exception("graph contains less than 2 nodes!")
+    return graph.is2Connected() and len(graph.nodes) >= 2
 
 
-def approx2Check(graph, bool=False):
+def approx2Check(graph):
     # requirements:
     # - connected
     # - 3 or more nodes
-    if bool:
-        return graph.isConnected() and len(graph.nodes) >= 3
-
-    if graph.is2Connected():
-        print("WARNING! graph is already 2-connected, run approx1 instead!")
-    if not graph.isConnected():
-        raise Exception("graph is NOT connected!")
-    if len(graph.nodes) < 3:
-        raise Exception("graph contains less than 3 nodes!")
+    return graph.isConnected() and len(graph.nodes) >= 3
 
 
-def approx3Check(graph, bool=False):
+def approx3Check(graph):
     # requirements:
     # - biconnected
     # - 3 or more nodes
-    if bool:
-        return graph.is2Connected() and len(graph.nodes) >= 3
-
-    if not graph.is2Connected():
-        raise Exception("graph is NOT 2-connected!")
-    if len(graph.nodes) < 3:
-        raise Exception("graph contains less than 3 nodes!")
+    return graph.is2Connected() and len(graph.nodes) >= 3
 
 
-def approx4Check(graph, bool=False):
+def approx4Check(graph):
     # requirements:
     # - connected
-    # - 3 or more nodes ?
     # - two biconnected components
-    if bool:
-        return (graph.isConnected()) and (len(graph.getBicomponents()) == 2) and (len(graph.cutVerticies()) == 1)
-
-    if graph.is2Connected():
-        print("WARNING! graph is already 2-connected, run approx3 instead!")
-    if not graph.isConnected():
-        raise Exception("graph is NOT connected!")
-    if len(graph.nodes) < 4:
-        raise Exception("graph contains less than 4 nodes!")
-    if len(graph.getBicomponents()) != 2:
-        # for comp in graph.getBicomponents():
-        #     print(comp)
-        raise Exception("graph does NOT have two biconnected components!")
-    if len(graph.cutVerticies()) != 1:
-        raise Exception("graph does NOT have one cut vertex!")
+    # - one cut vertex
+    return (graph.isConnected()) and (len(graph.getBicomponents()) == 2) and (len(graph.cutVerticies()) == 1)
 
 
-def approx5Check(graph, bool=False):
+def approx5Check(graph):
     # requirements:
     # - connected
     # - more than two biconnected components
-    # - 6 or more nodes?
-    if bool:
-        return graph.isConnected() and len(graph.getBicomponents()) >= 2
-
-    # twoConnectedCompList, cutVertices = V.findAll2Components()
-    # if len(twoConnectedCompList) > len(V.nodes) - 1:
-    #     raise Exception("The number of 2 connected components is greater than V -1")
-
-    pass
+    return graph.isConnected() and len(graph.getBicomponents()) >= 2
 
 
-def approx6Check(graph, bool=False):
+def approx6Check(graph):
     # requirements:
     # - biconnected
     # - 3 or more nodes
-    if bool:
-        return graph.is2Connected() and len(graph.nodes) >= 3
-
-    if not graph.is2Connected():
-        raise Exception("graph is NOT 2-connected!")
-    if len(graph.nodes) < 3:
-        raise Exception("graph contains less than 3 nodes!")
+    return graph.is2Connected() and len(graph.nodes) >= 3
 
 
-def approx7Check(graph, bool=False):
+def approx7Check(graph):
     # requirements:
     # - connected
-    # - 3 or more nodes ?
     # - two biconnected components
-    if bool:
-        return (graph.isConnected()) and (len(graph.getBicomponents()) == 2) and (len(graph.cutVerticies()) == 1)
-
-    if graph.is2Connected():
-        print("WARNING! graph is already 2-connected, run approx3 instead!")
-    if not graph.isConnected():
-        raise Exception("graph is NOT connected!")
-    if len(graph.nodes) < 4:
-        raise Exception("graph contains less than 4 nodes!")
-    if len(graph.getBicomponents()) != 2:
-        # for comp in graph.getBicomponents():
-        #     print(comp)
-        raise Exception("graph does NOT have two biconnected components!")
-    if len(graph.cutVerticies()) != 1:
-        raise Exception("graph does NOT have one cut vertex!")
+    # - one cut vertex
+    return (graph.isConnected()) and (len(graph.getBicomponents()) == 2) and (len(graph.cutVerticies()) == 1)
 
 
-def approx8Check(graph, bool=False):
+def approx8Check(graph):
     # requirements:
     # - connected
     # - more than two biconnected components
-    # - 6 or more nodes?
-    if bool:
-        return graph.isConnected() and len(graph.getBicomponents()) >= 2
-
-    # twoConnectedCompList, cutVertices = V.findAll2Components()
-    # if len(twoConnectedCompList) > len(V.nodes) - 1:
-    #     raise Exception("The number of 2 connected components is greater than V -1")
-
-    pass        
+    return graph.isConnected() and len(graph.getBicomponents()) >= 2
 
 
 def checkAll(graph):
@@ -154,3 +84,4 @@ def checkAll(graph):
         result.append("Approx-8 for MAX-MIN k=3")
 
     return result
+    

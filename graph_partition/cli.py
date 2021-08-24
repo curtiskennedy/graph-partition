@@ -6,7 +6,6 @@ import csv
 
 from collections import defaultdict
 from PyInquirer import style_from_dict, Token, prompt
-from prompt_toolkit.terminal.vt100_output import Vt100_Output
 from pyfiglet import Figlet
 from graph_partition import readInstance, checkAll, approx1, approx2, approx3, approx4, approx5, approx6, approx7, approx8
 
