@@ -33,7 +33,6 @@ class Graph:
         instead of "for nodeID in graph.nodes:"
         we can use "for nodeID in graph:"
         '''
-        # ? is this slower than using Graph.nodes?
         return iter(self.nodes)
 
     def __getitem__(self, key) -> None:
@@ -41,14 +40,12 @@ class Graph:
         Allows for retriving a node using graph[nodeID]
         instead of graph.nodes[nodeID]
         '''
-        # ? is this slower than using Graph.nodes?
         return self.nodes[key]
 
     def __setitem__(self, key, val) -> None:
         '''
         Similar to __getitem__()
         '''
-        # ? is this slower than using Graph.nodes?
         self.nodes[key] = val
 
     def __eq__(self, o: object) -> bool:
@@ -60,9 +57,18 @@ class Graph:
         return self.isEqualTo(o)
 
     def createView(self, nodes):
+        '''
+        Returns a Graph object containing only the specified nodes
+        '''
         result = Graph({})
         for node in nodes:
             result.nodes[node] = self.nodes[node]
+        return result
+
+    def nodeView(self):
+        result = set()
+        for node in self.nodes:
+            result.add(node)
         return result
 
     ############################################################################
@@ -82,7 +88,6 @@ class Graph:
     def union(self, rightGraph):
         '''
         graph1.union(graph2) => graph1 U graph2
-
         Returns a graph representing the union of self and rightGraph
         '''
         leftGraph = self
@@ -99,7 +104,6 @@ class Graph:
     def intersection(self, rightGraph):
         '''
         graph1.intersection(graph2) => graph1 ∩ graph2
-
         Returns a graph representing the union of self and rightGraph
         '''
         leftGraph = self
@@ -111,8 +115,9 @@ class Graph:
 
     
     def slash(self, rightGraph):
-        # ! requires __iter__ and __getitem__ and __setitem__ to work (since rightGraph can be passed in as a list of nodes or a Graph object)
-        # TODO: add list compatibility without above requirement
+        '''
+        Returns self / rightGraph
+        '''
         leftGraph = self
         graph = Graph({})
         for node in leftGraph:
@@ -170,7 +175,36 @@ class Graph:
         return lightNode, lightWeight
 
 
+    def getHeaviestNode(self, ignoreList=set()):
+        '''
+        Returns the id of the heaviest node
+        '''
+        heavyWeight = -1
+        for node in self.nodes:
+            if (self.nodes[node]['weight'] > heavyWeight) and (node not in ignoreList):
+                heavyWeight = self.nodes[node]['weight']
+                heavyNode = node
+        return heavyNode
 
+
+    def lightestComp(self):
+        weight = float('inf')
+        result = None
+        for comp in self.findAllConnectedComponents():
+            if comp.weight() < weight:
+                weight = comp.weight()
+                result = comp
+        return result
+
+
+    def heaviestComp(self):
+        weight = -1
+        result = None
+        for comp in self.findAllConnectedComponents():
+            if comp.weight() > weight:
+                weight = comp.weight()
+                result = comp
+        return result
 
     ############################################################################
     # PARTITIONING
@@ -186,52 +220,29 @@ class Graph:
         return
 
 
-    # def anyBipartition(self):
-    #     # ! need to change to increase possible partition size
-        
-    #     for node in list(self.nodes.keys()):
-    #         if self.canDelNode(node):
-    #             result1 = self.slash([node])
-    #             result2 = self.createView([node])
-    #             return result1, result2
-    #     print(self)
-    #     raise Exception("No bipartition can be made")
-
-
     def anyBipartition(self):
         if self.isConnected():
-            # print("calling anyBipartition on a connected graph")
             # naive approach, trying all possible combinations
             size = 1
             while size <= (1/2) * len(self.nodes):
                 for partition in combinations(self.nodes.keys(), size):
                     result1 = self.slash(partition)
                     result2 = self.createView(partition)
-                    # print(result1)
-                    # print(result2)
                     if result1.isConnected() and result2.isConnected():
-                        # print("done")
                         return result1, result2
                 size += 1
 
         else:
-            # print("calling anyBipartition on an unconnected graph")
             # find two connected components that form a feasible bipartition
-            # ? Can be improved by assuming only 2 components exist ?
             goalWeight = self.weight()
             components = self.findAllConnectedComponents()
             for comp in components:
                 for othercomp in components:
                     if (comp != othercomp) and (comp.weight() + othercomp.weight() == goalWeight):
-                        # print("done")
                         return comp, othercomp
                 
-
         print(self)
         raise Exception("Can't find any feasible bipartition")
-
-
-
 
 
     def pull1(self, V1, graphWeight):
@@ -271,8 +282,104 @@ class Graph:
             return False, lastcheckedU
 
 
+    def pull2NEW(self, V1, graphWeight, v2):
+        '''
+        PULL-2 with adjusted conditions
+        '''
+        V2 = self
+        if (V2.weight() > (4/5) * graphWeight):
+            sortedList = list(sorted(self.nodes.keys(), reverse=False))
+            for u in sortedList: # ? Changing order of nodes affects final partition
+                if (u != v2) and V2.isFeasible(u, V1):
+                    uWeight = V2.nodes[u]['weight']
+                    if (V1.weight() + uWeight <= V2.weight() - uWeight):
+                        V2.pullTo(V1, u)
+                        return True, u
+                    else:
+                        lastcheckedU = u
+            return False, lastcheckedU
 
 
+    def pull3(self, V2):
+        '''
+        PULL-3
+        '''
+        V3 = self
+        if V3.weight() > ((1/2) * V3.union(V2).weight()):
+            ignoreList = set()
+            while 1:
+                u, uWeight = V3.getLightestNode(ignoreList)
+                if u == "not set":
+                    return False, V2, V3
+
+                if V3.createView([u]).isAdjacentTo(V2):
+                    # found u
+                    if V3.slash([u]).isConnected():
+                        U = V3.createView([u])
+                    else:
+                        count, compList = V3.slash([u]).countAdjacentComps(V2)
+                        if count == 0:
+                            U_prime = V3.slash([u]).heaviestComp()
+                            U = V3.slash(U_prime)
+                        elif count == 1:
+                            U_prime = compList.pop()
+                            if U_prime.weight() < V3.slash(U_prime).weight():
+                                U = U_prime
+                            else:
+                                U = V3.slash(U_prime)
+                        elif count > 1:
+                            weight = float('inf')
+                            for comp in compList:
+                                if comp.weight() < weight:
+                                    weight = comp.weight()
+                                    U = comp
+                            if U.weight() > (1/2) * V3.weight():
+                                raise Exception("Error here")
+                        
+                    if V2.weight() + U.weight() <= V3.weight():
+                        # Pull happens here
+                        V2 = V2.union(U)
+                        V3 = V3.slash(U)
+                        return True, V2, V3
+                    else:
+                        return False, V2, V3
+                else:
+                    ignoreList.add(u)
+        else:
+            return False, V2, V3
+
+
+    def bfs(self, v1, v2, v3):
+        V1 = Graph({})
+        V2 = Graph({})
+        V3 = Graph({})
+        queue = []
+        queue.append(v1)
+        visited = set()
+        visited.add(v1)
+        parent = {v1:v1}
+        while queue != []:
+            node = queue.pop(0)
+            if node == v1:
+                V1.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+            elif node == v2:
+                V2.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+            elif node == v3:
+                V3.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+            else:
+                if parent[node] in V1.nodes:
+                    V1.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+                elif parent[node] in V2.nodes:
+                    V2.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+                else:
+                    V3.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
+                                                
+            for edge in self.nodes[node]['edges']:
+                if edge not in visited and edge in self.nodes:
+                    visited.add(edge)
+                    queue.append(edge)
+                    parent[edge] = node
+        return V1, V2, V3
 
     ############################################################################
     # CONNECTIVITY
@@ -290,6 +397,17 @@ class Graph:
         if (len(visited) == goal):
             return True
         return False
+
+
+    def findAllConnectedComponents(self):
+        compList = []
+        visited = set()
+        for vertex in self.nodes:
+            if vertex not in visited:
+                component = Graph({vertex: self.nodes[vertex]})
+                self.dfsComponent(vertex, visited, component)
+                compList.append(component)
+        return compList
 
 
     def isFeasible(self, u, V1):
@@ -366,9 +484,18 @@ class Graph:
                 if (neighbour in self.nodes and neighbour not in visited):
                     toVisit.add(neighbour)
 
-
     ############################################################################
     # BI-CONNECTIVITY
+
+    '''
+    Indicated methods adapted from python package 'networkx'
+
+    Aric A. Hagberg, Daniel A. Schult and Pieter J. Swart, 
+    “Exploring network structure, dynamics, and function using NetworkX”, 
+    in Proceedings of the 7th Python in Science Conference (SciPy2008), 
+    Gäel Varoquaux, Travis Vaught, and Jarrod Millman (Eds), 
+    (Pasadena, CA USA), pp. 11–15, Aug 2008
+    '''
 
 
     def is2Connected(self):
@@ -390,6 +517,14 @@ class Graph:
                 except:
                     pass
             components.append(component)
+        return components
+
+
+    def getBicomponentsNodes(self):
+        # adapted from python package 'networkx'
+        components = []
+        for comp in self.biconnectedDfs(components=True):
+            components.append(set(chain.from_iterable(comp)))
         return components
 
 
@@ -422,7 +557,6 @@ class Graph:
                     if grandparent == child:
                         continue
                     if child in visited:
-                        # This try/except was added by me, TESTING RESULTS?
                         try: 
                             if discovery[child] <= discovery[parent]:  # back edge
                                 low[parent] = min(low[parent], discovery[child])
@@ -460,114 +594,13 @@ class Graph:
                 if root_children > 1:
                     yield start
 
-
     ############################################################################
-    # NOT IN USE
-
-
-    # def anyBipartition(self):
-    #     '''
-    #     Attempts to make any feasible bipartition
-    #     Returns V1 (containing a single node) and V2
-    #     '''
-    #     for node in self.nodes:
-    #         u = self.newPartition(node)
-    #         if u:
-    #             return u 
-    #     raise Exception("No bipartition can be made")
-
-
-    # def newPartition(self, nodeID, dontDelete=False):
-    #     '''
-    #     Removes nodeID from current graph and returns a new graph with the single node
-    #     '''
-    #     if dontDelete:
-    #         d = self.nodes[nodeID]
-    #         return Graph({nodeID:d})
-
-    #     success, d = self.delNode(nodeID)
-    #     if success:
-    #         return Graph({nodeID: d})
-    #     else:
-    #         return False
-
-
-    # def isFeasible(self, u, V1):
-    #     '''
-    #     Returns true/false whether the partition V1 + u, V2 - u is feasible
-    #     '''
-    #     V2 = self
-    #     success, d = V2.delNode(u)
-    #     if success:
-    #         # undo it
-    #         V2.nodes[u] = d
-    #         if V2.canAddNode(u, V1):
-    #             return True
-    #     return False
-
-
-    # def delNode(self, nodeID):
-    #     '''
-    #     Removes a node from the graph, only if the resulting graph is connected
-    #     Returns:
-    #         1. True/False if operation succeeded
-    #         2. the dict entry of the removed node
-    #     '''
-    #     d = self.nodes[nodeID]
-    #     del self.nodes[nodeID]
-    #     # ? is it possible to check if a node can be removed without dfs?
-    #     if self.isConnected():
-    #         return True, d
-    #     else:
-    #         self.nodes[nodeID] = d
-    #         return False, d
-
-    ############################################################################
-    # work in progress / currently testing:
-    # NOTES:
-    # - 
-
-    def findAllConnectedComponents(self):
-        compList = []
-        visited = set()
-        for vertex in self.nodes:
-            if vertex not in visited:
-                component = Graph({vertex: self.nodes[vertex]})
-                self.dfsComponent(vertex, visited, component)
-                compList.append(component)
-        return compList
-
-
-    def getBicomponentsNodes(self):
-        # adapted from python package 'networkx'
-        components = []
-        for comp in self.biconnectedDfs(components=True):
-            components.append(set(chain.from_iterable(comp)))
-        return components
-
-
-    def nodeView(self):
-        result = set()
-        for node in self.nodes:
-            result.add(node)
-        return result
-
-
-    def getHeaviestNode(self, ignoreList=set()):
-        '''
-        Returns the id of the heaviest node
-        '''
-        heavyWeight = -1
-        for node in self.nodes:
-            if (self.nodes[node]['weight'] > heavyWeight) and (node not in ignoreList):
-                heavyWeight = self.nodes[node]['weight']
-                heavyNode = node
-        return heavyNode
+    # OTHER
 
 
     def removeUnionEdges(self, comp1, comp2):
         '''
-        Removes all the edges in union, returns them as a set of tuples?
+        Removes all the edges in union, returns them as a set of tuples
         '''
         toRemove = set()
         for node in comp1.nodes:
@@ -606,7 +639,6 @@ class Graph:
         '''
         # ignore the weight of vert2 because it should already have been added to vert1
 
-
         vert2Edges = set(self.nodes[vert2]['edges'])
         if vert1 in vert2Edges:
             vert2Edges.remove(vert1)
@@ -615,16 +647,11 @@ class Graph:
 
         newEdges = vert1Edges.union(vert2Edges)
 
-
         self.nodes[vert1]['edges'] = list(newEdges)
-
-
-
 
         addedEdges = set()
         for edge in vert2Edges.difference(vert1Edges):
             addedEdges.add((vert1,edge))
-
 
         for node in newGraph.nodes:
             edgeSet = set(newGraph.nodes[node]['edges'])
@@ -635,56 +662,6 @@ class Graph:
 
         return newGraph, addedEdges
         # all thats left to repair the graph is to remove all edges from v1 that occur in v2
-
-
-    def pull3(self, V2):
-        V3 = self
-
-        if V3.weight() > ((1/2) * V3.union(V2).weight()):
-            ignoreList = set()
-            while 1:
-                u, uWeight = V3.getLightestNode(ignoreList)
-                if u == "not set":
-                    return False, V2, V3
-
-                if V3.createView([u]).isAdjacentTo(V2):
-                    # found u
-                    if V3.slash([u]).isConnected():
-                        U = V3.createView([u])
-                    else:
-                        count, compList = V3.slash([u]).countAdjacentComps(V2)
-                        if count == 0:
-                            U_prime = V3.slash([u]).heaviestComp()
-                            U = V3.slash(U_prime)
-                        elif count == 1:
-                            U_prime = compList.pop()
-                            if U_prime.weight() < V3.slash(U_prime).weight():
-                                U = U_prime
-                            else:
-                                U = V3.slash(U_prime)
-                        elif count > 1:
-                            weight = float('inf')
-                            for comp in compList:
-                                if comp.weight() < weight:
-                                    weight = comp.weight()
-                                    U = comp
-                            if U.weight() > (1/2) * V3.weight():
-                                raise Exception("Error here")
-                        
-                    if V2.weight() + U.weight() <= V3.weight():
-                        # Pull happens here
-                        V2 = V2.union(U)
-                        V3 = V3.slash(U)
-                        return True, V2, V3
-                    else:
-                        return False, V2, V3
-
-                else:
-                    ignoreList.add(u)
-        else:
-            return False, V2, V3
-
-
 
 
     def isAdjacentTo(self, rightGraph):
@@ -705,74 +682,4 @@ class Graph:
                 compList.append(comp)
         return count, compList
 
-
-    def heaviestComp(self):
-        weight = -1
-        result = None
-        for comp in self.findAllConnectedComponents():
-            if comp.weight() > weight:
-                weight = comp.weight()
-                result = comp
-        return result
-
-    def lightestComp(self):
-        weight = float('inf')
-        result = None
-        for comp in self.findAllConnectedComponents():
-            if comp.weight() < weight:
-                weight = comp.weight()
-                result = comp
-        return result
-
-
-    def pull2NEW(self, V1, graphWeight, v2):
-        '''
-        PULL-2
-        '''
-        V2 = self
-        if (V2.weight() > (4/5) * graphWeight):
-            sortedList = list(sorted(self.nodes.keys(), reverse=False))
-            for u in sortedList: # ? Changing order of nodes affects final partition
-                if (u != v2) and V2.isFeasible(u, V1):
-                    uWeight = V2.nodes[u]['weight']
-                    if (V1.weight() + uWeight <= V2.weight() - uWeight):
-                        V2.pullTo(V1, u)
-                        return True, u
-                    else:
-                        lastcheckedU = u
-            return False, lastcheckedU
-
-
-
-    def bfs(self, v1, v2, v3):
-        V1 = Graph({})
-        V2 = Graph({})
-        V3 = Graph({})
-        queue = []
-        queue.append(v1)
-        visited = set()
-        visited.add(v1)
-        parent = {v1:v1}
-        while queue != []:
-            node = queue.pop(0)
-            if node == v1:
-                V1.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
-            elif node == v2:
-                V2.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
-            elif node == v3:
-                V3.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
-            else:
-                if parent[node] in V1.nodes:
-                    V1.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
-                elif parent[node] in V2.nodes:
-                    V2.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
-                else:
-                    V3.addVertex(node, self.nodes[node]['edges'], self.nodes[node]['weight'])
-                                                
-            for edge in self.nodes[node]['edges']:
-                if edge not in visited and edge in self.nodes:
-                    visited.add(edge)
-                    queue.append(edge)
-                    parent[edge] = node
-        return V1, V2, V3
     ############################################################################
