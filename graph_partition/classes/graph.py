@@ -342,7 +342,7 @@ class Graph:
                         V3 = V3.slash(U)
                         return True, V2, V3
                     else:
-                        return False, V2, V3
+                        ignoreList.add(u)
                 else:
                     ignoreList.add(u)
         else:

@@ -16,7 +16,7 @@ def approx6(V):
 
     # Step 1
     if v1_weight >= v2_weight >= v3_weight >= ((1/5) * V_Weight):
-        print("Step 1 TEST")
+        print("Step 1 further testing needed")
         #!testing needed
         return V.bfs(v1,v2,v3)
 
@@ -101,7 +101,7 @@ def approx6(V):
             # 3b
             # else
             if U.weight() < ((1/5) * V_Weight):
-                print("3b TEST")
+                print("3b")
                 compList = V.slash(V1.union(V.createView([u]))).findAllConnectedComponents()
                 if len(compList) < 3:
                     raise Exception("ERROR HERE")
@@ -112,12 +112,18 @@ def approx6(V):
                     adjCompList = []
                     for comp in compList:
                         if comp.isAdjacentTo(V1.createView([uj])):
+                        # if comp.isAdjacentTo(V1.createView([uj])) and not comp.isAdjacentTo(V1.slash([uj])):
+                            """
+                            When the total weight of the components among G[Ui]’s that are adjacent to only
+                            the vertex uj from V1 is greater than...
+                            """
+                            # ? which above 'if' statement is correct, given the word 'only'?
                             totalWeight += comp.weight()
                             adjCompList.append(comp)
                     # evaluate totalWeight to decide case
                     if totalWeight < (((1/5)*V_Weight) - V1.nodeWeight(uj)):
                         # pull uj out of V1 and continues in the for loop
-                        print("3b.1 TEST")
+                        print("3b.1 further testing needed")
                         V1 = V1.slash([uj])
                         newComp = Graph({})
                         for adjComp in adjCompList:
@@ -127,7 +133,7 @@ def approx6(V):
                         compList.append(newComp)
 
                     elif totalWeight > (((4/5)*V_Weight) - V.nodeWeight(uj) - V.nodeWeight(u)):
-                        print("3b.2 TEST")
+                        print("3b.2 further testing needed")
                         #returns
                         GU = V.slash([uj,u]).heaviestComp()
                         V2 = V.createView([uj])
@@ -140,7 +146,7 @@ def approx6(V):
                         return U, V2, V.slash(U.union(V2))
 
                     else:
-                        print("3b.3 TEST")
+                        print("3b.3 further testing needed")
                         #returns
                         V2 = V.createView([uj])
                         while V2.weight() < ((1/5)*V_Weight):

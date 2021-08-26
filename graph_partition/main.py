@@ -1,6 +1,7 @@
 
 import sys
-from graph_partition.cli import guided, experiment
+from graph_partition.cli import guided
+from graph_partition.experiment import experiment
 
 def cli(args=None):
     """
@@ -17,20 +18,8 @@ def cli(args=None):
 
     for argument in args:
         if argument in ["-h","-help"]:
-            print("Try entering the command: 'partition -guide' or 'partition -g'")
+            print("Try entering the command: 'partition'")
             print("Conduct numerical experiments with 'partition -exp' or 'partition -e'")
-            return
-        if argument in ['-guided','-g']:
-            guided()
             return
         if argument in ['-exp','-e']:
             experiment()
-
-    # # * Since only one command is currently supported, just call guided() for now
-    # guided()
-
-
-
-    
-
-

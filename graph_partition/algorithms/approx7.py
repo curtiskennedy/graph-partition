@@ -16,6 +16,7 @@ def approx7(V):
     # Step 1
     if V.nodeWeight(v0) >= min((1/5)*graphWeight,H1.slash([v0]).weight(),H2.slash([v0]).weight()):
         # print("Step 1")
+        # ? does this case not guarantee a 5/3 approximation?
         return H1.slash([v0]), V.createView([v0]), H2.slash([v0])
 
     # Step 2
