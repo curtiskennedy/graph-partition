@@ -111,8 +111,8 @@ def approx6(V):
                     totalWeight = 0
                     adjCompList = []
                     for comp in compList:
-                        if comp.isAdjacentTo(V1.createView([uj])):
-                        # if comp.isAdjacentTo(V1.createView([uj])) and not comp.isAdjacentTo(V1.slash([uj])):
+                        # if comp.isAdjacentTo(V1.createView([uj])):
+                        if comp.isAdjacentTo(V1.createView([uj])) and not comp.isAdjacentTo(V1.slash([uj])):
                             """
                             When the total weight of the components among G[Ui]’s that are adjacent to only
                             the vertex uj from V1 is greater than...
