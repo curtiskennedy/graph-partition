@@ -2,5 +2,4 @@
 .vscode
 all-instances
 ignore
-*.in
 local_testing
