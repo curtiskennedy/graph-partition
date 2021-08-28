@@ -1,4 +1,4 @@
-__version__ = '2021.8.25'
+__version__ = '2021.8.27'
 
 from graph_partition.classes.graph import Graph
 from graph_partition.classes.instanceManager import readInstance
